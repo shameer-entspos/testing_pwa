@@ -4,11 +4,20 @@ import ThemeToggle from '@/components/theme/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { saveEntryOffline } from '@/lib/db'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const MainPage = () => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker
+        .register('/sw.js')
+        .then((reg) => console.log('SW registered', reg))
+        .catch((err) => console.log('SW failed', err))
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
