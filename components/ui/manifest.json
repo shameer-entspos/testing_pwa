@@ -1,0 +1,32 @@
+{
+  "theme_color": "#000",
+  "background_color": "oklch(1 0 0 / 15%)",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "name": "EvloveAI OfficeHassle",
+  "short_name": "EvloveAI OfficeHassle",
+  "description": "Manage tasks, teams, and deadlines effortlessly with OfficeHassle’s powerful project management platform.",
+  "icons": [
+    {
+      "src": "/icons/office_hassle_144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/office_hassle_192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/office_hassle_512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/office_hassle_860x860.png",
+      "sizes": "860x860",
+      "type": "image/png"
+    }
+  ]
+}
