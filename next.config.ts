@@ -4,14 +4,16 @@ const withPWA = require('next-pwa')({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  runtimeCaching: require('./runtimeCaching'),
+  disable: true,
+  // runtimeCaching: require('./runtimeCaching'),
 })
 
 const nextConfig: NextConfig = {
   /* config options here */
   reactStrictMode: true,
+  turbopack: {},
   env: {
-    CURRENT_ENV: process.env.NODE_ENV,
+    CURRENT_ENV: process.env.CURRENT_ENV,
   },
 }
 
