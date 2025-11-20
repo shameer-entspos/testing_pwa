@@ -1,4 +1,4 @@
-import { openDB, DBSchema } from 'idb'
+import { openDB, DBSchema, IDBPDatabase } from 'idb'
 
 interface Entry {
   id: string
@@ -12,28 +12,46 @@ interface MyDB extends DBSchema {
   entries: {
     key: string
     value: Entry
+    indexes: { syncStatus: 'pending' | 'synced' } // define index type
   }
 }
 
-export const dbPromise = openDB<MyDB>('my-offline-db', 1, {
-  upgrade(db) {
-    if (!db.objectStoreNames.contains('entries')) {
-      db.createObjectStore('entries', { keyPath: 'id' })
-    }
-  },
-})
+let dbPromise: Promise<IDBPDatabase<MyDB>> | null = null
 
+export function getDB() {
+  if (!dbPromise) {
+    dbPromise = openDB<MyDB>('my-offline-db', 1, {
+      upgrade(db) {
+        if (!db.objectStoreNames.contains('entries')) {
+          const store = db.createObjectStore('entries', { keyPath: 'id' })
+          store.createIndex('syncStatus', 'syncStatus')
+        }
+      },
+    })
+  }
+  return dbPromise
+}
+
+// Save entry offline
 export async function saveEntryOffline(entry: Entry) {
-  const db = await dbPromise
+  const db = await getDB()
   await db.put('entries', entry)
 }
 
-export async function getAllEntries() {
-  const db = await dbPromise
-  return await db.getAll('entries')
+// Get all entries
+export async function getAllEntries(): Promise<Entry[]> {
+  const db = await getDB()
+  return db.getAll('entries')
 }
 
-export async function getPendingEntries() {
-  const db = await dbPromise
-  return await db.getAllFromIndex('entries', 'syncStatus')
+// Get only pending entries
+export async function getPendingEntries(): Promise<Entry[]> {
+  const db = await getDB()
+  return db.getAllFromIndex('entries', 'syncStatus', 'pending')
+}
+
+// Optional: get synced entries
+export async function getSyncedEntries(): Promise<Entry[]> {
+  const db = await getDB()
+  return db.getAllFromIndex('entries', 'syncStatus', 'synced')
 }
